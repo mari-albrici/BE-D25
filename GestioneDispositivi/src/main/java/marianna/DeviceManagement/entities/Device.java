@@ -1,10 +1,9 @@
 package marianna.DeviceManagement.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import marianna.DeviceManagement.entities.enums.State;
+import marianna.DeviceManagement.entities.enums.Status;
 
 import java.util.UUID;
 
@@ -12,13 +11,17 @@ import java.util.UUID;
 @Table(name = "devices")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public abstract class Devices {
+public abstract class Device {
 
     @Id
     @GeneratedValue
     private UUID id;
-    private State state;
+
+    @Enumerated(EnumType.STRING)
+    private Status state;
+
+    @ManyToOne
+    private User user;
 
 }
