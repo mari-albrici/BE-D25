@@ -1,14 +1,14 @@
-package marianna.GestioneDispositivi;
+package marianna.DeviceManagement;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class GestioneDispositiviApplication {
+public class DeviceManagementApplication {
 
 	public static void main(String[] args) {
 
-		SpringApplication.run(GestioneDispositiviApplication.class, args);
+		SpringApplication.run(DeviceManagementApplication.class, args);
 	}
 
 }
