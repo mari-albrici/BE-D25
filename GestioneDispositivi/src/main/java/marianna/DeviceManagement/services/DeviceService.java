@@ -40,11 +40,9 @@ public class DeviceService {
 
     public Device findByIdAndUpdate(UUID id, Device body) throws NotFoundException {
         Device found = this.findById(id);
-        String username = body.getUser().getUsername();
-        System.out.println(username);
-        User user = userService.findById(username);
-        System.out.println(user);
-        found.setUser(user);
+//        String username = body.getUser().getUsername();
+//        User user = userService.findById(username);
+        found.setUser(userService.findById(body.getUser().getUsername()));
         found.setState(body.getState());
         found.setId(id);
         return found;

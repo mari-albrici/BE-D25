@@ -13,7 +13,7 @@ public class UserRunner implements CommandLineRunner {
     @Autowired
     private UserService userService;
     @Override
-    public void run(String... args){
+    public void run(String... args) throws Exception {
 
         Faker faker = new Faker(new Locale("it"));
 
