@@ -26,31 +26,34 @@ public class JWTAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        if (!request.getMethod().equals("OPTIONS")) {
+            String authHeader = request.getHeader("Authorization");
 
-        String authHeader = request.getHeader("Authorization");
+            if (authHeader == null || !authHeader.startsWith("Bearer "))
+                throw new UnauthorizedException("Add authorization token to header");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer "))
-            throw new UnauthorizedException("Add authorization token to header");
+            String accessToken = authHeader.substring(7);
+            JWTTools.isTokenValid(accessToken);
 
-        String accessToken = authHeader.substring(7);
-        JWTTools.isTokenValid(accessToken);
+            String username = JWTTools.extractSubject(accessToken);
+            System.out.println("***** USERNAME: " + username + "*****");
+            try {
+                User user = userService.findById(username);
 
-        String username = JWTTools.extractSubject(accessToken);
-        System.out.println("***** USERNAME: " + username + "*****");
-        try {
-            User user = userService.findById(username);
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user, null,
+                        user.getAuthorities());
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user, null,
-                    user.getAuthorities());
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
 
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+                filterChain.doFilter(request, response);
 
-            filterChain.doFilter(request, response);
-
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-        }
+            } catch (NotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+                filterChain.doFilter(request, response);
+            }
     }
 
     @Override
